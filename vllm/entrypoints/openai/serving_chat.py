@@ -42,6 +42,7 @@ from vllm.transformers_utils.tokenizer import AnyTokenizer, MistralTokenizer
 from vllm.transformers_utils.tokenizers import (maybe_serialize_tool_calls,
                                                 truncate_tool_call_ids,
                                                 validate_request_params)
+from vllm.sequence import RequestMetrics
 
 logger = init_logger(__name__)
 
@@ -1087,6 +1088,7 @@ class OpenAIServingChat(OpenAIServing):
             usage=usage,
             prompt_logprobs=clamp_prompt_logprobs(final_res.prompt_logprobs),
             kv_transfer_params=final_res.kv_transfer_params,
+            metrics=final_res.metrics if final_res.metrics else None,
         )
 
         return response

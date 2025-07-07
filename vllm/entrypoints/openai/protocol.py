@@ -5,7 +5,7 @@
 import json
 import time
 from http import HTTPStatus
-from typing import Annotated, Any, ClassVar, Literal, Optional, Union
+from typing import Annotated, Any, ClassVar, Literal, Optional, Union, List
 
 import regex as re
 import torch
@@ -23,6 +23,7 @@ from vllm.sampling_params import (BeamSearchParams, GuidedDecodingParams,
                                   RequestOutputKind, SamplingParams)
 from vllm.sequence import Logprob
 from vllm.utils import random_uuid, resolve_obj_by_qualname
+from vllm.sequence import RequestMetrics
 
 logger = init_logger(__name__)
 
@@ -1243,6 +1244,7 @@ class CompletionResponse(OpenAIBaseModel):
     model: str
     choices: list[CompletionResponseChoice]
     usage: UsageInfo
+    metrics_list: List[RequestMetrics]
     kv_transfer_params: Optional[dict[str, Any]] = Field(
         default=None, description="KVTransfer parameters.")
 
@@ -1268,6 +1270,7 @@ class CompletionStreamResponse(OpenAIBaseModel):
     model: str
     choices: list[CompletionResponseStreamChoice]
     usage: Optional[UsageInfo] = Field(default=None)
+    metrics: RequestMetrics
 
 
 class EmbeddingResponseData(OpenAIBaseModel):
@@ -1436,6 +1439,7 @@ class ChatCompletionResponse(OpenAIBaseModel):
     prompt_logprobs: Optional[list[Optional[dict[int, Logprob]]]] = None
     kv_transfer_params: Optional[dict[str, Any]] = Field(
         default=None, description="KVTransfer parameters.")
+    metrics: RequestMetrics
 
 
 class DeltaMessage(OpenAIBaseModel):
