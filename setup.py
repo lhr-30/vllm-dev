@@ -95,6 +95,10 @@ class cmake_build_ext(build_ext):
     #
     # Determine number of compilation jobs and optionally nvcc compile threads.
     #
+    def finalize_options(self):
+        super().finalize_options()
+        self.build_temp = os.path.join(os.getcwd(), "build")
+    
     def compute_num_jobs(self):
         # `num_jobs` is either the value of the MAX_JOBS environment variable
         # (if defined) or the number of CPUs available.
