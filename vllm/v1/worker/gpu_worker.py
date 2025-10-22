@@ -211,6 +211,12 @@ class Worker(WorkerBase):
         eep_scale_up = os.environ.get("VLLM_ELASTIC_EP_SCALE_UP_LAUNCH") == "1"
         with self._maybe_get_memory_pool_context(tag="weights"):
             self.model_runner.load_model(eep_scale_up=eep_scale_up)
+            
+        from lmcache.v1.compute.models.utils import VLLMModelTracker
+        from lmcache.integration.vllm.utils import ENGINE_NAME
+                
+        VLLMModelTracker.register_model(ENGINE_NAME, self.model_runner.model)
+        ensure_kv_transfer_initialized(self.vllm_config)
 
     def update_config(self, overrides: dict[str, Any]) -> None:
         self.model_runner.update_config(overrides)
@@ -694,4 +700,4 @@ def init_worker_distributed_environment(
         parallel_config.pipeline_parallel_size,
         parallel_config.decode_context_parallel_size)
 
-    ensure_kv_transfer_initialized(vllm_config)
+    # ensure_kv_transfer_initialized(vllm_config)
