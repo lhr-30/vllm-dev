@@ -7,7 +7,7 @@ import json
 import time
 from http import HTTPStatus
 from typing import (Annotated, Any, ClassVar, Generic, Literal, Optional,
-                    TypeVar, Union)
+                    TypeVar, Union, List)
 
 import regex as re
 import torch
@@ -48,6 +48,7 @@ from vllm.pooling_params import PoolingParams
 from vllm.sampling_params import (BeamSearchParams, GuidedDecodingParams,
                                   RequestOutputKind, SamplingParams)
 from vllm.utils import random_uuid, resolve_obj_by_qualname
+from vllm.sequence import RequestMetrics
 
 logger = init_logger(__name__)
 
@@ -1588,6 +1589,7 @@ class CompletionResponse(OpenAIBaseModel):
                                    "priority"]] = None
     system_fingerprint: Optional[str] = None
     usage: UsageInfo
+    metrics_list: List[RequestMetrics]
 
     # vLLM-specific fields that are not in OpenAI spec
     kv_transfer_params: Optional[dict[str, Any]] = Field(
